@@ -1,0 +1,20 @@
+stages:
+  - test
+  - deploy
+
+pytest:
+  stage: test
+  image: python:3.8
+  script:
+    - pip install -r requirements.txt
+    - python -m pytest
+  artifacts:
+    reports:
+      junit: junit.xml
+
+deployment:
+  stage: deploy
+  script:
+    - curl https://api.render.com/deploy/srv-cn4p45acn0vc738tj42g?key=v7OsSPPY7sE
+  only:
+    - main

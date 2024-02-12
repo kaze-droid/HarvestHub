@@ -1,0 +1,61 @@
+<header class="w-full font-medium py-6 flex items-center justify-between relative z-10 lg:px-12 md:px-8 sm:px-4">
+
+    {% set navLinks = ['index', 'predict', 'history'] %}
+
+    <nav class="flex items-center justify-between">
+        <!-- Include Logo -->
+        <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" class="w-32 h-32" />
+        </a>
+        <div class="pl-12 flex items-center space-x-4">
+            {% for link in navLinks %}
+            <a href="{{ url_for(link) }}"
+                class="text-2xl font-medium hover:underline px-4 py-2 {% if active_page == link %}text-darkGreen underline {% else %}text-paleGreen {% endif %}">
+                {{ link.capitalize() }}
+            </a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <div>
+        <img class="is-rounded profileIcon {% if current_user.is_authenticated %}w-20 h-20 {% else %}w-24 h-24 {% endif %} hover:cursor-pointer" id="dropdownHoverButton" data-dropdown-placement="bottom-start"
+            data-dropdown-toggle="dropdownHover" data-dropdown-trigger="hover"
+            src="{% if current_user.is_authenticated %}https://ui-avatars.com/api/?name={{  current_user.username  }}&size=64&rounded=True&length=1&bold=true{% else %}{{ url_for('static',filename='images/blankProfile.png')}}{% endif %}"
+            alt="Profile Picture">
+
+        <!-- Dropdown menu -->
+        {%if current_user.is_authenticated %}
+        <div id="dropdownHover" class="z-10 hidden divide-y rounded-lg shadow w-48 bg-gray-500">
+            <ul class="py-2 text-md text-white" aria-labelledby="dropdownHoverButton">
+                <li>
+                    <p
+                        class="block px-4 py-2">User: {{ current_user.username }}</p>
+                </li>
+                <hr>
+                <li>
+                    <a href="/profile"
+                        class="block px-4 py-2 hover:bg-gray-600">View Profile</a>
+                </li>
+                <li>
+                    <a href="/logout"
+                        class="block px-4 py-2 hover:bg-gray-600">Sign
+                        out</a>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <div id="dropdownHover" class="z-10 hidden divide-y rounded-lg shadow w-48 bg-gray-500">
+            <ul class="py-2 text-md text-white" aria-labelledby="dropdownHoverButton">
+                <li>
+                    <a href="/signup"
+                        class="block px-4 py-2 hover:bg-gray-600">Sign Up</a>
+                </li>
+                <li>
+                    <a href="/login"
+                        class="block px-4 py-2 hover:bg-gray-600">Log In</a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</header>

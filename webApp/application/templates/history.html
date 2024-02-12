@@ -1,0 +1,239 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="flex flex-col w-full h-full items-center self-center justify-center">
+    <div class="pt-6 text-3xl font-bold font-NovaFlat text-earthBrown underline">
+        History Page
+    </div>
+
+    <div class="relative overflow-x-auto sm:rounded-lg pt-6 w-4/5">
+        {% with messages = get_flashed_messages(with_categories=true)%}
+        {% if messages %}
+        <div class="flex justify-center pb-6 w-full">
+            {% for category, message in messages %}
+            <div id="alert-border-3"
+                class="flex items-center p-4 mb-4 {% if category == 'success' %}text-green-800 border-t-4 border-green-300 bg-green-50 {% else %}text-red-800 border-t-4 border-red-300 bg-red-50{% endif %}"
+                role="alert">
+                <div class="ms-3 text-sm font-medium">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if hasEntries %}
+        <form id="filterPrediction" action="/history" method="post">
+            {{ form.hidden_tag() }}
+
+            <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center space-x-3 pb-4">
+                <!-- Multi Select Vegetable -->
+                <div class="flex flex-col">
+                    <label for="vegetableFilter" class="text-gray-700 text-sm">Filter by Vegetables</label>
+                    <div class="inline-block relative w-64">
+                        {{ form.vegetableFilter(id_="vegetableFilter") }}
+                    </div>
+                </div>
+
+                <script>
+                    new MultiSelectTag("vegetableFilter", {
+                        placeholder: "Select Vegetables",
+                        tagColor: {
+                            bgColor: "#72a312",
+                            textColor: "#fff",
+                            borderColor: "#72a312",
+                        },
+                        onChange: function (selected) {
+                             // Submit form when any input changes
+                            const form = document.querySelector('#filterPrediction');
+                            form.submit();
+                        }
+                    });
+                </script>
+
+
+                <!-- Dropdown Menu -->
+                <div class="inline-block relative w-64">
+                    <div class="flex flex-col">
+                        <label for="modelFilter" class="text-gray-700 text-sm">Filter by Model</label>
+                        <div>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 left-0 flex items-center px-2 text-gray-500">
+                                <svg class="w-3 h-3 text-gray-500 me-3 mt-[20px]" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+                                </svg>
+                            </div>
+        
+                            {{ form.pastDays(class_="block appearance-none w-full bg-white border border-gray-400
+                            hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none
+                            focus:shadow-outline pl-6 focus:ring-0 focus:ring-offset-0") }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Select Dropdown -->
+                <div class="inline-block relative w-64">
+
+                    <div class="flex flex-col">
+                        <label for="modelFilter" class="text-gray-700 text-sm">Filter by Date</label>
+                        <div>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 left-0 flex items-center px-2 text-gray-500">
+                                <svg class="w-4 h-4 text-gray-500 me-3 mt-[20px]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="800px" height="800px"
+                                    viewBox="0 0 32 32" id="icon">
+                                    <defs>
+                                        <style>
+                                            .cls-1 {
+                                                fill: none;
+                                            }
+                                        </style>
+                                    </defs>
+                                    <path
+                                        d="M27,24a2.9609,2.9609,0,0,0-1.2854.3008L21.4141,20H18v2h2.5859l3.7146,3.7148A2.9665,2.9665,0,0,0,24,27a3,3,0,1,0,3-3Zm0,4a1,1,0,1,1,1-1A1.0009,1.0009,0,0,1,27,28Z" />
+                                    <path
+                                        d="M27,13a2.9948,2.9948,0,0,0-2.8157,2H18v2h6.1843A2.9947,2.9947,0,1,0,27,13Zm0,4a1,1,0,1,1,1-1A1.0009,1.0009,0,0,1,27,17Z" />
+                                    <path
+                                        d="M27,2a3.0033,3.0033,0,0,0-3,3,2.9657,2.9657,0,0,0,.3481,1.373L20.5957,10H18v2h3.4043l4.3989-4.2524A2.9987,2.9987,0,1,0,27,2Zm0,4a1,1,0,1,1,1-1A1.0009,1.0009,0,0,1,27,6Z" />
+                                    <path
+                                        d="M18,6h2V4H18a3.9756,3.9756,0,0,0-3,1.3823A3.9756,3.9756,0,0,0,12,4H11a9.01,9.01,0,0,0-9,9v6a9.01,9.01,0,0,0,9,9h1a3.9756,3.9756,0,0,0,3-1.3823A3.9756,3.9756,0,0,0,18,28h2V26H18a2.0023,2.0023,0,0,1-2-2V8A2.0023,2.0023,0,0,1,18,6ZM12,26H11a7.0047,7.0047,0,0,1-6.92-6H6V18H4V14H7a3.0033,3.0033,0,0,0,3-3V9H8v2a1.0009,1.0009,0,0,1-1,1H4.08A7.0047,7.0047,0,0,1,11,6h1a2.0023,2.0023,0,0,1,2,2v4H12v2h2v4H12a3.0033,3.0033,0,0,0-3,3v2h2V21a1.0009,1.0009,0,0,1,1-1h2v4A2.0023,2.0023,0,0,1,12,26Z" />
+                                    <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
+                                        width="32" height="32" />
+                                </svg>
+                            </div>
+        
+                            {{ form.modelFilter(class_="block appearance-none w-full bg-white border border-gray-400
+                            hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none
+                            focus:shadow-outline pl-7 focus:ring-0 focus:ring-offset-0") }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="inline-block relative w-64">
+                    <div class="flex flex-col">
+                        <label for="searchFilter" class="invisible">search</label>
+                        <div>
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-500 mt-[25px]" aria-hidden="true" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            {{ form.searchFilter(class_="block w-full pl-10 py-2 border border-gray-400 rounded-lg
+                            bg-white text-gray-900 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-2
+                            focus:ring-blue-600 focus:border-transparent", placeholder="Search") }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <script>
+            // Submit form when any input changes
+            const pastDays = document.querySelector('#pastDays');
+            const modelFilter = document.querySelector('#modelFilter');
+            const searchFilter = document.querySelector('#searchFilter');
+            const form = document.querySelector('#filterPrediction');
+
+            pastDays.addEventListener('change', () => {
+                form.submit();
+            });
+
+            modelFilter.addEventListener('change', () => {
+                form.submit();
+            });
+
+            searchFilter.addEventListener('input', () => {
+                form.submit();
+            });
+            
+        </script>
+
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-200">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Entry
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Image
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Model
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Prediction
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Confidence
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-center">
+                        Delete
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        {{ loop.index }}
+                    </th>
+                    <td class="px-6 py-4">
+                        <img src="data:image/jpeg;base64,{{ entry.image }}" alt="Image of {{ entry.prediction }}"
+                            class="w-24 h-24">
+                    </td>
+                    <td class="px-6 py-4 text-gray-900">
+                        {{ entry.model }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-900">
+                        {{ entry.prediction }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-900">
+                        {{ entry.confidence }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-900">
+                        {{ entry.prediction_date }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-900">
+                        <form class="text-center" name="formRemove" action="/removePred" method="post">
+                            <input type="hidden" name="id" value="{{ entry.id }}">
+                            <button type="submit" value="Remove">
+                                <svg enable-background="new 0 0 512 512" width="32" height="32" id="Layer_1"
+                                    version="1.1" viewBox="0 0 512 512" xml:space="preserve"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g>
+                                        <path
+                                            d="M444.852,66.908h-99.339V47.04c0-21.943-17.792-39.736-39.736-39.736h-99.339   c-21.944,0-39.736,17.793-39.736,39.736v19.868H67.363v19.868h20.47l19.887,377.489c0,21.944,17.792,39.736,39.736,39.736h218.546   c21.944,0,39.736-17.792,39.736-39.736l19.538-377.489h19.577V66.908z M186.57,47.04c0-10.962,8.926-19.868,19.868-19.868h99.339   c10.962,0,19.868,8.906,19.868,19.868v19.868H186.57V47.04z M385.908,463.236l-0.039,0.505v0.524   c0,10.943-8.906,19.868-19.868,19.868H147.455c-10.942,0-19.868-8.925-19.868-19.868v-0.524l-0.019-0.523L107.72,86.776h297.669   L385.908,463.236z"
+                                            fill="#dc2626" />
+                                        <rect fill="#dc2626" height="317.885" width="19.868" x="246.173" y="126.511" />
+                                        <polygon fill="#dc2626"
+                                            points="206.884,443.757 186.551,126.493 166.722,127.753 187.056,445.017  " />
+                                        <polygon fill="#dc2626"
+                                            points="345.649,127.132 325.82,125.891 305.777,443.776 325.606,445.017  " />
+                                    </g>
+                                </svg>
+                            </button>
+                        </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="my-6 flex flex-col items-center">
+            <div class="mb-3">{% include "svgs/waiting.html" %}</div>
+            <p class="font-serif font-semibold">No entries found for now...</p>
+            <p class="font-serif font-semibold">Come back after you've made some <a href="/predict"
+                    class="has-text-link is-underlined">predictions</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

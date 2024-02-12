@@ -1,0 +1,21 @@
+stages:
+  - test
+  - deploy
+
+pytest:
+  stage: test
+  image: python:3.8
+  script:
+    - pip install -r requirements.txt
+    # Skip local test for CI
+    - python -m pytest -k 'not test_docker.py' --junitxml=junit.xml
+  artifacts:
+    reports:
+      junit: junit.xml
+
+deployment:
+  stage: deploy
+  script:
+    - curl https://api.render.com/deploy/srv-cmh9nt6n7f5s739qd7b0?key=ya2hxoUX4PY
+  only:
+    - main

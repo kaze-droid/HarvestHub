@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="flex w-full h-full items-center self-center">
+    <div class="w-1/2 ml-4 flex justify-center">{% include "svgs/environment.html" %}</div>
+    <div class="w-1/2 flex flex-col items-center self-center">
+        <h1 class="text-4xl font-NovaFlat text-earthBrown">
+            <strong>Cultivating</strong> Connections to
+            <strong>Nature's Bounty</strong>
+        </h1>
+        <div class="text-xl font-serif pt-6">Join us in celebrating the vibrant tapestry of nature's harvest by <a
+                class="underline text-limeGreen" href="/signup">signing up</a> for a free account. Experience Freshness
+            Redefined!</div>
+    </div>
+</div>
+
+{% endblock %}
